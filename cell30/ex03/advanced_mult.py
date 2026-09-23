@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-import sys
-
-# ตรวจสอบว่ามีการส่ง argument มาหรือไม่ ถ้ามีให้พิมพ์ none แล้วจบโปรแกรม
-if len(sys.argv) > 1:
-    print("none")
-    sys.exit()
-
 i = 0
 while i <= 10:
     print(f"Table de {i}:", end="")

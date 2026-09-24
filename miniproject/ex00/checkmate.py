@@ -3,7 +3,7 @@
 def checkmate(board):
     if not isinstance(board, str) or not board:
         return
-# split line and delete empty   
+# split line and delete empty  
     lines = []
     for line in board.splitlines():
         if line != "":          
@@ -15,7 +15,7 @@ def checkmate(board):
     for line in lines:
         if len(line) != n:
             return
-
+# king position
     king_pos = None
     king_count = 0
     for r in range(n):
@@ -27,10 +27,16 @@ def checkmate(board):
     if king_count != 1:
         return
 
+   
     kr, kc = king_pos
-
-    for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-        r, c = kr + dr, kc + dc
+    
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    for direction in directions:
+        dr = direction[0]  
+        dc = direction[1]  
+        r = kr + dr        
+        c = kc + dc        
+    
         while 0 <= r < n and 0 <= c < n:
             ch = lines[r][c]
             if ch in ('P', 'B', 'R', 'Q', 'K'):

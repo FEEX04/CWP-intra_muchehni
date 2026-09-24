@@ -1,78 +1,70 @@
 #!/usr/bin/env python3
 
 def checkmate(board):
-    # 1. Validation Check: ตรวจสอบความถูกต้องของ Input
-    if not isinstance(board, str) or not board:      # เช็กเงื่อนไขว่า ตัวแปร board ที่ส่งมา ไม่ใช่ข้อความ (String) หรือ เป็นข้อความว่างเปล่า หรือไม่
-        return                                        # ถ้าเงื่อนไขด้านบนเป็นจริง (ข้อมูลไม่ถูกต้องหรือว่างเปล่า) ให้หยุดทำงานและออกจากฟังก์ชันทันที
+    if not isinstance(board, str) or not board:
+        return
 
-    # แยกบรรทัดและกรองบรรทัดว่างออก
-    lines = [line for line in board.splitlines() if line]  # แปลงข้อความกระดานหลายๆ บรรทัดให้กลายเป็น List ของแต่ละแถว (ละเว้นบรรทัดว่าง)
-    if not lines:                                     # เช็กว่าหลังจากตัดบรรทัดแล้ว lines กลายเป็น List ว่างเปล่าหรือไม่
-        return                                        # ถ้า lines ว่างเปล่า ให้หยุดทำงานและออกจากฟังก์ชันทันที
+    lines = [line for line in board.splitlines() if line]
+    if not lines:
+        return
 
-    # ตรวจสอบว่าเป็นกระดานสี่เหลี่ยมจัตุรัส (N x N)
-    n = len(lines)                                    # นับจำนวนแถวทั้งหมดใน lines แล้วเก็บไว้ที่ตัวแปร n (ใช้เป็นขนาดกระดาน N)
-    for line in lines:                                # เริ่มวนลูปอ่านข้อมูลกระดานทีละแถว เก็บแถวปัจจุบันไว้ในตัวแปร line
-        if len(line) != n:                            # ตรวจสอบว่าความยาวของแถวปัจจุบัน ไม่เท่ากับ จำนวนแถวทั้งหมด (n) หรือไม่
-            return                                    # ถ้ากระดานไม่เป็นสี่เหลี่ยมจัตุรัส ให้หยุดทำงานและออกจากฟังก์ชันทันที
+    n = len(lines)
+    for line in lines:
+        if len(line) != n:
+            return
 
-    # 2. Find King: ค้นหาตำแหน่งของ King (K)
-    king_pos = None                                   # ประกาศตัวแปร king_pos เป็น None เพื่อใช้เก็บพิกัด (แถว, คอลัมน์) ของ King
-    king_count = 0                                    # ประกาศตัวแปร king_count เป็น 0 เพื่อใช้นับจำนวน King บนกระดาน
-    for r in range(n):                                # วนลูปอ่านแถว (r = Row) ตั้งแต่แถวที่ 0 ถึง n-1
-        for c in range(n):                            # วนลูปอ่านคอลัมน์ (c = Column) ตั้งแต่คอลัมน์ที่ 0 ถึง n-1
-            if lines[r][c] == 'K':                    # ตรวจสอบว่าอักขระในตำแหน่งแถว r คอลัมน์ c เป็น 'K' (King) หรือไม่
-                king_pos = (r, c)                     # เก็บบันทึกพิกัดตำแหน่งไว้ในตัวแปร king_pos รูปแบบ (r, c)
-                king_count += 1                       # บวกเพิ่มจำนวนนับของ King ขึ้นอีก 1 ตัว
+    king_pos = None
+    king_count = 0
+    for r in range(n):
+        for c in range(n):
+            if lines[r][c] == 'K':
+                king_pos = (r, c)
+                king_count += 1
 
-    if king_count != 1:                               # เช็กว่าจำนวน King ไม่เท่ากับ 1 ตัวหรือไม่ (ไม่เจอ King หรือมีเกิน 1 ตัว)
-        return                                        # ถ้าจำนวน King ไม่ใช่ 1 ตัวพอดี ให้หยุดทำงานและออกจากฟังก์ชันทันที
+    if king_count != 1:
+        return
 
-    kr, kc = king_pos                                 # ดึงพิกัดออกจาก king_pos มาแยกใส่ตัวแปร kr (แถว King) และ kc (คอลัมน์ King)
+    kr, kc = king_pos
 
-    # 3. Check Orthogonal: เช็กแนวนอนและแนวตั้ง (Rook, Queen)
-    for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]: # วนลูปทิศทางแนวนอนและแนวตั้ง 4 ทิศ (ขึ้น, ลง, ซ้าย, ขวา)
-        r, c = kr + dr, kc + dc                       # กำหนดจุดเริ่มต้นในการเดินสายตาถัดจากตำแหน่ง King 1 ช่อง
-        while 0 <= r < n and 0 <= c < n:               # วนลูปเดินสายตาทะลุไปเรื่อยๆ ตราบใดที่ยังไม่ตกขอบกระดาน
-            ch = lines[r][c]                          # ดึงตัวอักษรในตำแหน่งปัจจุบันบนกระดานมาไว้ที่ตัวแปร ch
-            if ch in ('P', 'B', 'R', 'Q', 'K'):       # เช็กว่าเจอตัวหมากใดๆ ขวางทางอยู่หรือไม่
-                if ch in ('R', 'Q'):                  # ถ้าหมากตัวแรกที่เจอเป็น Rook ('R') หรือ Queen ('Q')
-                    print("Success")                  # พิมพ์คำว่า Success (แสดงว่า King โดนรุก)
-                    return                            # หยุดทำงานและออกจากฟังก์ชันทันที
-                break                                 # ถ้าเจอหมากตัวอื่นบังสายตา ให้หยุดค้นหาในทิศทางนี้
-            r += dr                                   # ขยับแถวไปยังช่องถัดไปตามทิศทาง dr
-            c += dc                                   # ขยับคอลัมน์ไปยังช่องถัดไปตามทิศทาง dc
+    for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+        r, c = kr + dr, kc + dc
+        while 0 <= r < n and 0 <= c < n:
+            ch = lines[r][c]
+            if ch in ('P', 'B', 'R', 'Q', 'K'):
+                if ch in ('R', 'Q'):
+                    print("Success")
+                    return
+                break
+            r += dr
+            c += dc
 
-    # 4. Check Diagonal UP: เช็กแนวเฉียงขึ้นบน (Bishop, Queen)
-    for dr, dc in [(-1, -1), (-1, 1)]:                # วนลูปทิศทางแนวเฉียงขึ้นบน 2 ทิศ (ซ้ายบน, ขวาบน)
-        r, c = kr + dr, kc + dc                       # กำหนดจุดเริ่มต้นในการเดินสายตาถัดจากตำแหน่ง King 1 ช่อง
-        while 0 <= r < n and 0 <= c < n:               # วนลูปเดินสายตาทะลุไปเรื่อยๆ ตราบใดที่ยังไม่ตกขอบกระดาน
-            ch = lines[r][c]                          # ดึงตัวอักษรในตำแหน่งปัจจุบันบนกระดานมาไว้ที่ตัวแปร ch
-            if ch in ('P', 'B', 'R', 'Q', 'K'):       # เช็กว่าเจอตัวหมากใดๆ ขวางทางอยู่หรือไม่
-                if ch in ('B', 'Q'):                  # ถ้าหมากตัวแรกที่เจอเป็น Bishop ('B') หรือ Queen ('Q')
-                    print("Success")                  # พิมพ์คำว่า Success
-                    return                            # หยุดทำงานและออกจากฟังก์ชันทันที
-                break                                 # ถ้าเจอหมากตัวอื่นบังสายตา ให้หยุดค้นหาในทิศทางนี้
-            r += dr                                   # ขยับแถวไปช่องถัดไป
-            c += dc                                   # ขยับคอลัมน์ไปช่องถัดไป
+    for dr, dc in [(-1, -1), (-1, 1)]:
+        r, c = kr + dr, kc + dc
+        while 0 <= r < n and 0 <= c < n:
+            ch = lines[r][c]
+            if ch in ('P', 'B', 'R', 'Q', 'K'):
+                if ch in ('B', 'Q'):
+                    print("Success")
+                    return
+                break
+            r += dr
+            c += dc
 
-    # 5. Check Diagonal DOWN: เช็กแนวเฉียงลงล่าง (Pawn ระยะ 1 ช่อง, Bishop, Queen)
-    for dr, dc in [(1, -1), (1, 1)]:                  # วนลูปทิศทางแนวเฉียงลงล่าง 2 ทิศ (ซ้ายล่าง, ขวาล่าง)
-        r, c = kr + dr, kc + dc                       # กำหนดจุดเริ่มต้นในการเดินสายตาถัดจากตำแหน่ง King 1 ช่อง
-        dist = 1                                      # ตัวแปรนับระยะห่างจาก King เริ่มต้นที่ 1 ช่อง
-        while 0 <= r < n and 0 <= c < n:               # วนลูปเดินสายตาทะลุไปเรื่อยๆ ตราบใดที่ยังไม่ตกขอบกระดาน
-            ch = lines[r][c]                          # ดึงตัวอักษรในตำแหน่งปัจจุบันบนกระดานมาไว้ที่ตัวแปร ch
-            if ch in ('P', 'B', 'R', 'Q', 'K'):       # เช็กว่าเจอตัวหมากใดๆ ขวางทางอยู่หรือไม่
-                if dist == 1 and ch in ('P', 'B', 'Q'):# ถ้าระยะห่าง 1 ช่อง แล้วเจอ Pawn ('P'), Bishop ('B'), หรือ Queen ('Q')
-                    print("Success")                  # พิมพ์คำว่า Success (Pawn เฉียงล่างระยะ 1 แทงขึ้นมารุก King ได้)
-                    return                            # หยุดทำงานและออกจากฟังก์ชันทันที
-                elif dist > 1 and ch in ('B', 'Q'):   # ถ้าระยะห่างมากกว่า 1 ช่อง แล้วเจอ Bishop ('B') หรือ Queen ('Q')
-                    print("Success")                  # พิมพ์คำว่า Success
-                    return                            # หยุดทำงานและออกจากฟังก์ชันทันที
-                break                                 # ถ้าเจอหมากตัวอื่นบังสายตา ให้หยุดค้นหาในทิศทางนี้
-            r += dr                                   # ขยับแถวไปช่องถัดไป
-            c += dc                                   # ขยับคอลัมน์ไปช่องถัดไป
-            dist += 1                                 # เพิ่มระยะห่างขึ้นทีละ 1
+    for dr, dc in [(1, -1), (1, 1)]:
+        r, c = kr + dr, kc + dc
+        dist = 1
+        while 0 <= r < n and 0 <= c < n:
+            ch = lines[r][c]
+            if ch in ('P', 'B', 'R', 'Q', 'K'):
+                if dist == 1 and ch in ('P', 'B', 'Q'):
+                    print("Success")
+                    return
+                elif dist > 1 and ch in ('B', 'Q'):
+                    print("Success")
+                    return
+                break
+            r += dr
+            c += dc
+            dist += 1
 
-    # 6. Default Output
-    print("Fail")                                     # หากเช็กครบทุกทิศทางแล้วไม่มีตัวไหนรุก King ได้เลย ให้พิมพ์ Fail
+    print("Fail")

@@ -1,0 +1,4 @@
+cat << 'EOF' > board2.chess
+..
+.K
+EOF

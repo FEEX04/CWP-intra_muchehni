@@ -3,9 +3,12 @@
 def checkmate(board):
     if not isinstance(board, str) or not board:
         return
-
-    lines = [line for line in board.splitlines() if line]
-    if not lines:
+# split line and delete empty   
+    lines = []
+    for line in board.splitlines():
+        if line != "":          
+            lines.append(line)   
+    if len(lines) == 0:
         return
 
     n = len(lines)

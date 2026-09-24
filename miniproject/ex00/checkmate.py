@@ -25,18 +25,16 @@ def checkmate(board):
                 king_count += 1
 
     if king_count != 1:
-        return
-
-   
+        return 
+  
     kr, kc = king_pos
-    
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
     for direction in directions:
         dr = direction[0]  
         dc = direction[1]  
         r = kr + dr        
         c = kc + dc        
-    
+   # king checkmate in R,Q 
         while 0 <= r < n and 0 <= c < n:
             ch = lines[r][c]
             if ch in ('P', 'B', 'R', 'Q', 'K'):
@@ -46,7 +44,7 @@ def checkmate(board):
                 break
             r += dr
             c += dc
-
+    # king checkmate in B,Q  _crossline because P can't backward
     for dr, dc in [(-1, -1), (-1, 1)]:
         r, c = kr + dr, kc + dc
         while 0 <= r < n and 0 <= c < n:
@@ -58,7 +56,7 @@ def checkmate(board):
                 break
             r += dr
             c += dc
-
+    # king checkmate in B,Q,P  crossline_one ch _
     for dr, dc in [(1, -1), (1, 1)]:
         r, c = kr + dr, kc + dc
         dist = 1

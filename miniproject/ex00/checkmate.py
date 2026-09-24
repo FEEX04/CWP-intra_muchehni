@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-def checkmate(board):
+def checkmate(board):                                             #ประกาศสร้างฟังก์ชันชื่อ checkmate โดยรับพารามิเตอร์ชื่อ board (กระดานหมากรุกที่ส่งเข้ามา)
     if not isinstance(board, str) or not board:
         return
 
